@@ -64,7 +64,17 @@ func New(ctx context.Context, cancel context.CancelCauseFunc) (*Mw, error) {
 					cpl.Action{
 						Text: "&Import Mod URL",
 						OnTriggered: func() {
-							handler.ImportModInvoke()
+
+						},
+						Shortcut: cpl.Shortcut{
+							Key:       walk.KeyN,
+							Modifiers: walk.ModControl,
+						},
+					},
+					cpl.Action{
+						Text: "&Import Mod via Zip",
+						OnTriggered: func() {
+							handler.OnImportModZip()
 						},
 						Shortcut: cpl.Shortcut{
 							Key:       walk.KeyN,
@@ -88,9 +98,9 @@ func New(ctx context.Context, cancel context.CancelCauseFunc) (*Mw, error) {
 			Alignment: cpl.AlignHCenterVNear,
 			Items: []cpl.MenuItem{
 				cpl.Action{
-					Image: ico.Grab("header"),
+					Image: ico.Grab("new"),
 					OnTriggered: func() {
-						handler.ImportModInvoke()
+						handler.OnImportModZip()
 					},
 				},
 			},

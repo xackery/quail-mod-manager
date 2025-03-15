@@ -7,6 +7,7 @@ import (
 	"quail-mod-manager/component"
 	"quail-mod-manager/ico"
 	"quail-mod-manager/mw"
+	"quail-mod-manager/qmm"
 )
 
 func main() {
@@ -22,6 +23,12 @@ func main() {
 func run() error {
 	ctx, cancel := context.WithCancelCause(context.Background())
 	defer cancel(nil)
+
+	err := qmm.New()
+	if err != nil {
+		return fmt.Errorf("qmm new: %w", err)
+	}
+
 	cmw, err := mw.New(ctx, cancel)
 	if err != nil {
 		return fmt.Errorf("mw new: %w", err)

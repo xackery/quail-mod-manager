@@ -1,4 +1,4 @@
-package gui
+package dialog
 
 import (
 	"fmt"
