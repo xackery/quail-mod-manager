@@ -167,8 +167,11 @@ func New(ctx context.Context, cancel context.CancelCauseFunc) (*Mw, error) {
 								},
 							},
 						},
-						OnCurrentIndexChanged: mw.onModSelect,
-						StyleCell:             fvs.StyleCell,
+						//OnCurrentIndexChanged: mw.onModSelect,
+						//OnItemActivated: mw.onModSelect,
+						StyleCell: fvs.StyleCell,
+
+						//OnCurrentIndexChanged: mw.onModSelect,
 						//MaxSize:               cpl.Size{Width: 300, Height: 0},
 						Columns: []cpl.TableViewColumn{
 							{Name: "Name", Width: 160},

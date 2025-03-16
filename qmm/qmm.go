@@ -37,12 +37,14 @@ type QmmYaml struct {
 }
 
 type QmmYamlEntry struct {
+	IsEnabled    bool
 	Name         string `yaml:"name"`
 	ID           string `yaml:"id"`
 	Version      string `yaml:"version"`
 	QuailVersion string `yaml:"quail"`
 	Image        string `yaml:"image"`
-	imageData    *walk.Bitmap
+	ImageData    []byte
+	imageBitmap  *walk.Bitmap
 	URL          string `yaml:"url"`
 	Author       string `yaml:"author"`
 	Description  string `yaml:"description"`
@@ -52,7 +54,14 @@ func New() (*Qmm, error) {
 	q := &Qmm{}
 	err := q.loadConfig()
 	if err != nil {
-		return nil, fmt.Errorf("load config: %w", err)
+		dialog.ShowMessageBox("Error", err.Error()+"\nReverting to default settings", true)
+		q = &Qmm{}
+	}
+
+	for _, e := range q.Entries {
+		if len(e.ImageData) > 0 {
+			e.imageBitmap = ico.Generate(e.ID, e.ImageData)
+		}
 	}
 
 	instance = q
@@ -60,6 +69,7 @@ func New() (*Qmm, error) {
 	handler.RemoveModSubscribe(onRemoveMod)
 	handler.ImportModURLSubscribe(onModURL)
 	handler.GenerateModSubscribe(onGenerateMod)
+	handler.EnableModSubscribe(onEnableMod)
 
 	rebuildModlist()
 	return q, nil
@@ -147,8 +157,8 @@ func AddModZip(path string) error {
 			return fmt.Errorf("copy: %w", err)
 		}
 		if f.Name == yaml.Image {
-			yaml.imageData = ico.Generate(yaml.ID, buf.Bytes())
-
+			yaml.ImageData = buf.Bytes()
+			yaml.imageBitmap = ico.Generate(yaml.ID, yaml.ImageData)
 		}
 	}
 
@@ -158,6 +168,7 @@ func AddModZip(path string) error {
 		}
 	}
 
+	yaml.IsEnabled = true
 	q.Entries = append(q.Entries, yaml)
 	err = rebuildModlist()
 	if err != nil {
@@ -181,13 +192,15 @@ func rebuildModlist() error {
 
 	entries := make([]*component.ModViewEntry, len(instance.Entries))
 	for i, e := range instance.Entries {
+		fmt.Printf("%s: %t\n", e.Name, e.IsEnabled)
 		mventry := &component.ModViewEntry{
-			ID:   e.ID,
-			Name: e.Name,
-			URL:  e.URL,
+			IsEnabled: e.IsEnabled,
+			ID:        e.ID,
+			Name:      e.Name,
+			URL:       e.URL,
 		}
-		if e.imageData != nil {
-			mventry.Icon = e.imageData
+		if e.imageBitmap != nil {
+			mventry.Icon = e.imageBitmap
 		} else {
 			mventry.Icon = ico.Grab("mod")
 		}
@@ -213,6 +226,9 @@ func generateMod() error {
 	numEntries := 0
 
 	for _, e := range instance.Entries {
+		if !e.IsEnabled {
+			continue
+		}
 		path := fmt.Sprintf("cache/%s-%s.zip", e.ID, e.Version)
 		r, err := zip.OpenReader(path)
 		if err != nil {
@@ -481,7 +497,7 @@ func (q *Qmm) loadConfig() error {
 	nq := &Qmm{}
 	err = gob.NewDecoder(r).Decode(nq)
 	if err != nil {
-		return fmt.Errorf("decode: %w", err)
+		return fmt.Errorf("decode gob: %w", err)
 	}
 	q.Entries = nq.Entries
 	return nil
@@ -678,4 +694,31 @@ func AddModURL(url string) error {
 	}
 
 	return nil
+}
+
+func onEnableMod(modID string, state bool) {
+	q := instance
+	if q == nil {
+		dialog.ShowMessageBox("Error", "qmm is not initialized", true)
+		return
+	}
+
+	for _, e := range q.Entries {
+		if e.ID != modID {
+			continue
+		}
+		e.IsEnabled = state
+		break
+	}
+	err := rebuildModlist()
+	if err != nil {
+		dialog.ShowMessageBox("Error", err.Error(), true)
+		return
+	}
+	err = q.saveConfig()
+	if err != nil {
+		dialog.ShowMessageBox("Error", err.Error(), true)
+		return
+	}
+	fmt.Printf("Saved change")
 }

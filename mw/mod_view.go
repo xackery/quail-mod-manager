@@ -6,8 +6,7 @@ import (
 )
 
 func (mw *Mw) onModSelect() {
-
-	fmt.Printf("Mod selected: %d\n", mw.modViewWlk.SelectedIndexes())
+	fmt.Println("mod select change")
 }
 
 func SetModEntries(entries []*component.ModViewEntry) {

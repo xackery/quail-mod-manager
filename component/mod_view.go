@@ -2,6 +2,7 @@ package component
 
 import (
 	"fmt"
+	"quail-mod-manager/handler"
 	"sort"
 
 	"log/slog"
@@ -54,13 +55,13 @@ func (m *ModView) Value(row, col int) interface{} {
 
 // Called by the TableView to retrieve if a given row is checked.
 func (m *ModView) Checked(row int) bool {
-	return m.items[row].checked
+	return m.items[row].IsEnabled
 }
 
 // Called by the TableView when the user toggled the check box of a given row.
 func (m *ModView) SetChecked(row int, checked bool) error {
-	m.items[row].checked = checked
-
+	m.items[row].IsEnabled = checked
+	handler.OnModEnabled(m.items[row].ID, checked)
 	return nil
 }
 

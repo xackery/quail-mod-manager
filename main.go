@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"quail-mod-manager/dialog"
 	"quail-mod-manager/mw"
 	"quail-mod-manager/qmm"
 )
@@ -12,7 +13,7 @@ func main() {
 
 	err := run()
 	if err != nil {
-		fmt.Println("Failed to run: ", err)
+		dialog.ShowMessageBox("Error", "Failed to run: "+err.Error(), true)
 		os.Exit(1)
 	}
 

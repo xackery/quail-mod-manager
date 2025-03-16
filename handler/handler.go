@@ -5,6 +5,7 @@ var (
 	importModZipHandler []func()
 	removeModHandler    []func(modID string)
 	generateModHandler  []func()
+	enableModHandler    []func(modID string, state bool)
 )
 
 // SubscribeNewArchive allows subscribing to new archve creation events
@@ -43,14 +44,22 @@ func OnRemoveMod(modID string) {
 	}
 }
 
-// SubscribeNewArchive allows subscribing to new archve creation events
 func GenerateModSubscribe(fn func()) {
 	generateModHandler = append(generateModHandler, fn)
 }
 
-// ImportModZipInvoke invokes new archive creation events
 func OnGenerateMod() {
 	for _, fn := range generateModHandler {
 		fn()
+	}
+}
+
+func EnableModSubscribe(fn func(modID string, state bool)) {
+	enableModHandler = append(enableModHandler, fn)
+}
+
+func OnModEnabled(modID string, state bool) {
+	for _, fn := range enableModHandler {
+		fn(modID, state)
 	}
 }

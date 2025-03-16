@@ -3,12 +3,12 @@ package component
 import "github.com/xackery/wlk/walk"
 
 type ModViewEntry struct {
-	ID      string
-	Icon    *walk.Bitmap
-	Name    string
-	Ext     string
-	Size    string
-	RawSize int
-	checked bool
-	URL     string
+	IsEnabled bool
+	ID        string
+	Icon      *walk.Bitmap
+	Name      string
+	Ext       string
+	Size      string
+	RawSize   int
+	URL       string
 }
