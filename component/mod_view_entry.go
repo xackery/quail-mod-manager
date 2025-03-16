@@ -7,8 +7,6 @@ type ModViewEntry struct {
 	ID        string
 	Icon      *walk.Bitmap
 	Name      string
-	Ext       string
-	Size      string
-	RawSize   int
+	Version   string
 	URL       string
 }

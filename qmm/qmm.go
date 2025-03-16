@@ -198,6 +198,7 @@ func rebuildModlist() error {
 			ID:        e.ID,
 			Name:      e.Name,
 			URL:       e.URL,
+			Version:   e.Version,
 		}
 		if e.imageBitmap != nil {
 			mventry.Icon = e.imageBitmap

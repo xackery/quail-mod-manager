@@ -44,9 +44,9 @@ func (m *ModView) Value(row, col int) interface{} {
 	case 0:
 		return item.Name
 	case 1:
-		return item.Ext
+		return item.Version
 	case 2:
-		return item.Size
+		return item.ID
 	}
 
 	slog.Info("invalid col: %d\n", col)
@@ -86,9 +86,9 @@ func (m *ModView) Sort(col int, order walk.SortOrder) error {
 		case 0:
 			return c(a.Name < b.Name)
 		case 1:
-			return c(a.Ext < b.Ext)
+			return c(a.Version < b.Version)
 		case 2:
-			return c(a.RawSize < b.RawSize)
+			return c(a.ID < b.ID)
 		}
 
 		slog.Info("invalid sort col: %d", slog.Attr{Key: "column", Value: slog.IntValue(m.sortColumn)})

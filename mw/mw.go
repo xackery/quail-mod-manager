@@ -93,17 +93,32 @@ func New(ctx context.Context, cancel context.CancelCauseFunc) (*Mw, error) {
 					},
 				},
 			},
+			cpl.Menu{
+				Text: "&Help",
+				Items: []cpl.MenuItem{
+					cpl.Action{
+						Text: "About",
+						OnTriggered: func() {
+							handler.OnAbout()
+						},
+					},
+				},
+			},
 		},
 		ToolBar: cpl.ToolBar{
-			Alignment: cpl.AlignHCenterVNear,
+			ButtonStyle: cpl.ToolBarButtonImageOnly,
+			Alignment:   cpl.AlignHCenterVNear,
 			Items: []cpl.MenuItem{
 				cpl.Action{
+					//Text:  "Import Mod URL",
 					Image: ico.Grab("new"),
+
 					OnTriggered: func() {
 						handler.OnImportModURL()
 					},
 				},
 				cpl.Action{
+					//Text:  "Generate Mod",
 					Image: ico.Grab("material"),
 					OnTriggered: func() {
 						handler.OnGenerateMod()
@@ -175,8 +190,8 @@ func New(ctx context.Context, cancel context.CancelCauseFunc) (*Mw, error) {
 						//MaxSize:               cpl.Size{Width: 300, Height: 0},
 						Columns: []cpl.TableViewColumn{
 							{Name: "Name", Width: 160},
-							{Name: "Ext", Width: 40},
-							{Name: "Size", Width: 80},
+							{Name: "Version", Width: 80},
+							{Name: "ID", Width: 120},
 						},
 					},
 				},

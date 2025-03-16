@@ -6,6 +6,7 @@ var (
 	removeModHandler    []func(modID string)
 	generateModHandler  []func()
 	enableModHandler    []func(modID string, state bool)
+	aboutHandler        []func()
 )
 
 // SubscribeNewArchive allows subscribing to new archve creation events
@@ -61,5 +62,15 @@ func EnableModSubscribe(fn func(modID string, state bool)) {
 func OnModEnabled(modID string, state bool) {
 	for _, fn := range enableModHandler {
 		fn(modID, state)
+	}
+}
+
+func AboutSubscribe(fn func()) {
+	aboutHandler = append(aboutHandler, fn)
+}
+
+func OnAbout() {
+	for _, fn := range aboutHandler {
+		fn()
 	}
 }
