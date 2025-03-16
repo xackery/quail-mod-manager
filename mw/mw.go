@@ -64,7 +64,7 @@ func New(ctx context.Context, cancel context.CancelCauseFunc) (*Mw, error) {
 					cpl.Action{
 						Text: "&Import Mod URL",
 						OnTriggered: func() {
-
+							handler.OnImportModURL()
 						},
 						Shortcut: cpl.Shortcut{
 							Key:       walk.KeyN,
@@ -100,7 +100,13 @@ func New(ctx context.Context, cancel context.CancelCauseFunc) (*Mw, error) {
 				cpl.Action{
 					Image: ico.Grab("new"),
 					OnTriggered: func() {
-						handler.OnImportModZip()
+						handler.OnImportModURL()
+					},
+				},
+				cpl.Action{
+					Image: ico.Grab("material"),
+					OnTriggered: func() {
+						handler.OnGenerateMod()
 					},
 				},
 			},
@@ -144,7 +150,20 @@ func New(ctx context.Context, cancel context.CancelCauseFunc) (*Mw, error) {
 								Image: ico.Grab("delete"),
 								Text:  "Remove",
 								OnTriggered: func() {
+									index := mw.modViewWlk.CurrentIndex()
+									if index < 0 || index >= len(mw.modEntries) {
+										return
+									}
+									entry := mw.modEntries[index]
+									if entry == nil {
+										return
+									}
+									handler.OnRemoveMod(entry.ID)
 									fmt.Printf("Remove\n")
+								},
+
+								Shortcut: cpl.Shortcut{
+									Key: walk.KeyDelete,
 								},
 							},
 						},

@@ -13,6 +13,7 @@ require (
 require (
 	github.com/jsummers/gobmp v0.0.0-20230614200233-a9de23ed2e25 // indirect
 	github.com/xackery/encdec v0.1.11 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
